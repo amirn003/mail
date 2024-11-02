@@ -10,29 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
   load_mailbox('inbox');
 });
 
-function compose_email() {
 
-  // Show compose view and hide other views
-  document.querySelector('#emails-view').style.display = 'none';
-  document.querySelector('#compose-view').style.display = 'block';
-
-  // Clear out composition fields
-  document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
-}
-
-function load_mailbox(mailbox) {
-
-  // Show the mailbox and hide other views
-  document.querySelector('#emails-view').style.display = 'block';
-  document.querySelector('#compose-view').style.display = 'none';
-
-  // Show the mailbox name
-  document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
-}
-
-// Send Mail
 function send_email() {
   fetch('/emails', {
     method: 'POST',
@@ -51,6 +29,34 @@ function send_email() {
   return false;
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelector('#compose-form').onsubmit = send_email;
+function compose_email() {
+
+  // Show compose view and hide other views
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'block';
+
+  // Clear out composition fields
+  document.querySelector('#compose-recipients').value = '';
+  document.querySelector('#compose-subject').value = '';
+  document.querySelector('#compose-body').value = '';
+
+  // Send mail
+  const form = document.querySelector('#compose-form');
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    //document.querySelector('#compose-form').onsubmit = send_email;
+    send_email();
+  });
+
+}
+
+function load_mailbox(mailbox) {
+
+  // Show the mailbox and hide other views
+  document.querySelector('#emails-view').style.display = 'block';
+  document.querySelector('#compose-view').style.display = 'none';
+
+  // Show the mailbox name
+  document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 }
