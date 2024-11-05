@@ -44,10 +44,10 @@ function load_mailbox(mailbox) {
 
   // Get emails from mailbox
   const email = get_emails(mailbox);
-  console.log(`Email: ${email}`)
+  console.log(`Email: ${email}`);
 
   // Display emails
-  display_email(email)
+  display_email(mailbox, email);
 
 
 }
@@ -99,14 +99,13 @@ function get_emails(mailbox) {
     event.preventDefault();
     // Print emails
     console.log(emails);
-    alert(emails)
 
   });
 }
 
 // Display email when load_mailbox is called
-function display_email(email){
+function display_email(mailbox, email){
   const emailDiv = document.createElement('div');
-  emailDiv.innerHTML = email;
+  emailDiv.innerHTML = `${mailbox}: ` + email;
   document.querySelector('#emails-view').appendChild(emailDiv);
 }
