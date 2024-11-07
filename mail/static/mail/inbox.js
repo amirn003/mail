@@ -92,6 +92,6 @@ function get_emails(mailbox) {
 // Display email when load_mailbox is called
 function display_email(mailbox, email){
   const emailDiv = document.createElement('div');
-  emailDiv.innerHTML = `${mailbox}: ` + email;
+  emailDiv.innerHTML = `${mailbox.toUpperCase()}: ` + email;
   document.querySelector('#emails-view').appendChild(emailDiv);
 }
