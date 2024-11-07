@@ -76,13 +76,17 @@ function get_emails(mailbox) {
   console.log(`Mailbox: ${mailbox}`);
   fetch(`/emails/${mailbox}`)
   .then(response => response.json())
-  .then(emails => (event) =>{
-    event.preventDefault();
+  .then(emails => {
     // Print emails
     console.log(emails);
     return emails;
 
-  });
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    return [];
+  })
+  ;
 }
 
 // Display email when load_mailbox is called
