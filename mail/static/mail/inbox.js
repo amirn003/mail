@@ -43,10 +43,12 @@ function load_mailbox(mailbox) {
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
   // Get emails from mailbox
-  const email = get_emails(mailbox);
-
-  // Display emails
-  display_email(mailbox, email);
+  get_emails(mailbox)
+    .then(emails => {
+      console.log(`EMAILS: ${emails}`);
+      // Display emails
+      display_emails(mailbox, emails);
+    });
 
 
 }
@@ -71,27 +73,25 @@ function send_email() {
 }
 
 
-// Request the email from a particular mailbox
 function get_emails(mailbox) {
   console.log(`Mailbox: ${mailbox}`);
-  fetch(`/emails/${mailbox}`)
-  .then(response => response.json())
-  .then(emails => {
-    // Print emails
-    console.log(emails);
-    return emails;
-
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    return [];
-  })
-  ;
+  return fetch(`/emails/${mailbox}`)
+    .then(response => response.json())
+    .then(emails => {
+      // Print emails
+      console.log(emails);
+      return emails;
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      return [];
+    });
 }
 
-// Display email when load_mailbox is called
-function display_email(mailbox, email){
+
+// Display emails when load_mailbox is called
+function display_emails(mailbox, emails){
   const emailDiv = document.createElement('div');
-  emailDiv.innerHTML = `${mailbox.toUpperCase()}: ` + email;
+  emailDiv.innerHTML = `${mailbox.toUpperCase()}: ` + emails;
   document.querySelector('#emails-view').appendChild(emailDiv);
 }
