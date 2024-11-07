@@ -44,7 +44,6 @@ function load_mailbox(mailbox) {
 
   // Get emails from mailbox
   const email = get_emails(mailbox);
-  console.log(`Email: ${email}`);
 
   // Display emails
   display_email(mailbox, email);
@@ -72,33 +71,16 @@ function send_email() {
 }
 
 
-// Get emails with function email(request, email_id) in views.py
-function get_email(email_id) {
-  fetch(`/emails/${email_id}`)
-  .then(response => response.json())
-  .then(email => {
-    // Print email
-    console.log(email);
-  });
-}
-
-
-// Display email when load_mailbox is called
-function display_email(email) {
-  const emailDiv = document.createElement('div');
-  emailDiv.innerHTML = email;
-  document.querySelector('#emails-view').appendChild(emailDiv);
-}
-
-
-// Request the email from a particular mailbox by making a GET request to /emails/<mailbox>
+// Request the email from a particular mailbox
 function get_emails(mailbox) {
+  console.log(`Mailbox: ${mailbox}`);
   fetch(`/emails/${mailbox}`)
   .then(response => response.json())
   .then(emails => (event) =>{
     event.preventDefault();
     // Print emails
     console.log(emails);
+    return emails;
 
   });
 }
