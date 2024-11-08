@@ -45,12 +45,37 @@ function load_mailbox(mailbox) {
   // Get emails from mailbox
   get_emails(mailbox)
     .then(emails => {
-      console.log(`EMAILS: ${emails}`);
       // Display emails
       display_emails(mailbox, emails);
     });
 
+}
 
+// Display emails when load_mailbox is called
+function display_emails(mailbox, emails){
+  const emailsDiv = document.createElement('div');
+  // Add id to emailsDiv
+  emailsDiv.id = 'emails';
+  //emailsDiv.innerHTML = `${mailbox.toUpperCase()}: ` + emails;
+
+  // Loop through emails and create a counter for each email
+  emails.forEach(function (email, i) {
+
+    console.log(`EMAIL n°${i}: ${email.id} - ${email.sender} - ${email.subject}`);
+
+    let emailDiv = document.createElement('div');
+    // Add id to emailDiv
+    emailDiv.id = email.id;
+    // Add border to emailDiv
+    emailDiv.style.border = '1px solid black';
+    // Add padding to emailDiv
+    emailDiv.style.padding = '5px';
+    // Add content of email to emailDiv
+    emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span>`;
+
+    document.querySelector('#emails-view').appendChild(emailDiv);
+  });
+  //document.querySelector('#emails-view').appendChild(emailsDiv);
 }
 
 
@@ -86,12 +111,4 @@ function get_emails(mailbox) {
       console.error('Error:', error);
       return [];
     });
-}
-
-
-// Display emails when load_mailbox is called
-function display_emails(mailbox, emails){
-  const emailDiv = document.createElement('div');
-  emailDiv.innerHTML = `${mailbox.toUpperCase()}: ` + emails;
-  document.querySelector('#emails-view').appendChild(emailDiv);
 }
