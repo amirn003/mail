@@ -59,13 +59,15 @@ function display_emails(mailbox, emails){
   //emailsDiv.innerHTML = `${mailbox.toUpperCase()}: ` + emails;
 
   // Loop through emails and create a counter for each email
+  //emails.reverse();
+  //Get size of emails
+  const size = emails.length;
   emails.forEach(function (email, i) {
-
     console.log(`EMAIL n°${i}: ${email.id} - ${email.sender} - ${email.subject}`);
 
     let emailDiv = document.createElement('div');
     // Add id to emailDiv
-    emailDiv.id = email.id;
+    emailDiv.id = i + 1;
     // Add border to emailDiv
     emailDiv.style.border = '1px solid black';
     // Add padding to emailDiv
@@ -75,7 +77,6 @@ function display_emails(mailbox, emails){
 
     document.querySelector('#emails-view').appendChild(emailDiv);
   });
-  //document.querySelector('#emails-view').appendChild(emailsDiv);
 }
 
 
