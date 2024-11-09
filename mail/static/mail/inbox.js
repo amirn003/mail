@@ -60,8 +60,6 @@ function display_emails(mailbox, emails){
 
   // Loop through emails and create a counter for each email
   //emails.reverse();
-  //Get size of emails
-  const size = emails.length;
   emails.forEach(function (email, i) {
     console.log(`EMAIL n°${i}: ${email.id} - ${email.sender} - ${email.subject}`);
 
