@@ -70,6 +70,15 @@ function display_emails(mailbox, emails){
     emailDiv.style.border = '1px solid black';
     // Add padding to emailDiv
     emailDiv.style.padding = '5px';
+
+    // Add background color if email has been read
+    if (email.read) {
+      emailDiv.style.backgroundColor = 'lightgrey';
+    }
+    else {
+      emailDiv.style.backgroundColor = 'white';
+    }
+
     // Add content of email to emailDiv
     emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span>`;
 
