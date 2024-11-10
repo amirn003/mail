@@ -65,7 +65,7 @@ function display_emails(mailbox, emails){
 
     let emailDiv = document.createElement('div');
     // Add id to emailDiv
-    emailDiv.id = i + 1;
+    emailDiv.id = `email-${i + 1}`;
     // Add border to emailDiv
     emailDiv.style.border = '1px solid black';
     // Add padding to emailDiv
@@ -81,7 +81,10 @@ function display_emails(mailbox, emails){
 
     // Add content of email to emailDiv
     emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span>`;
-    emailDiv.addEventListener('click', () => {  get_email_content(email.id); });
+    emailDiv.addEventListener('click', () => {
+      const email_content = get_email_content(email.id);
+      display_email_content(email_content);
+    });
 
     document.querySelector('#emails-view').appendChild(emailDiv);
   });
@@ -94,7 +97,15 @@ function get_email_content(email_id) {
     .then(response => response.json())
     .then(email => {
       console.log(email);
+      return email;
     });
+}
+
+// Display email content
+function display_email_content(email) {
+  const emailDiv = document.createElement('div');
+  emailDiv.innerHTML = email;
+  document.querySelector('#email-content').appendChild(emailDiv);
 }
 
 
