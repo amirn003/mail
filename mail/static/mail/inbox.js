@@ -81,9 +81,20 @@ function display_emails(mailbox, emails){
 
     // Add content of email to emailDiv
     emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span>`;
+    emailDiv.addEventListener('click', () => {  get_email_content(email.id); });
 
     document.querySelector('#emails-view').appendChild(emailDiv);
   });
+}
+
+// Retrieve content of an email
+function get_email_content(email_id) {
+  console.log(`View email n°${email_id}`);
+  fetch(`/emails/${email_id}`)
+    .then(response => response.json())
+    .then(email => {
+      console.log(email);
+    });
 }
 
 
