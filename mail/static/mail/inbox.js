@@ -82,8 +82,14 @@ function display_emails(mailbox, emails){
     // Add content of email to emailDiv
     emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span>`;
     emailDiv.addEventListener('click', () => {
-      const email_content = get_email_content(email.id);
-      display_email_content(email_content);
+      get_email_content(email.id).then(email_content => {
+        if (email_content) {
+          display_email_content(email_content);
+        } else {
+          console.error('Failed to load email content');
+        }
+      });
+
     });
 
     document.querySelector('#emails-view').appendChild(emailDiv);
@@ -93,18 +99,32 @@ function display_emails(mailbox, emails){
 // Retrieve content of an email
 function get_email_content(email_id) {
   console.log(`View email n°${email_id}`);
-  fetch(`/emails/${email_id}`)
+  return fetch(`/emails/${email_id}`)
     .then(response => response.json())
     .then(email => {
       console.log(email);
       return email;
-    });
+    })
+    .catch(error => {
+      console.log('Error:', error);
+      return null;
+    })
+    ;
 }
 
-// Display email content
+// Display content of an email
 function display_email_content(email) {
+  document.querySelector('#emails-view').style.display = 'none';
   const emailDiv = document.createElement('div');
-  emailDiv.innerHTML = email;
+  emailDiv.innerHTML = `
+    <h3>${email.subject}</h3>
+    <p><strong>From:</strong> ${email.sender}</p>
+    <p><strong>To:</strong> ${email.recipients.join(', ')}</p>
+    <p><strong>Timestamp:</strong> ${email.timestamp}</p>
+    <hr>
+    <p>${email.body}</p>
+  `;
+  document.querySelector('#email-content').innerHTML = '';
   document.querySelector('#email-content').appendChild(emailDiv);
 }
 
