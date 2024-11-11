@@ -82,6 +82,7 @@ function display_emails(mailbox, emails){
     // Add content of email to emailDiv
     emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span>`;
     emailDiv.addEventListener('click', () => {
+      mark_email_as_read(email.id);
       get_email_content(email.id).then(email_content => {
         if (email_content) {
           display_email_content(email_content);
@@ -93,6 +94,48 @@ function display_emails(mailbox, emails){
     });
 
     document.querySelector('#emails-view').appendChild(emailDiv);
+  });
+}
+
+// Mark email as read
+function mark_email_as_read(email_id) {
+  console.log(`Mark email n°${email_id} as read`);
+  fetch(`/emails/${email_id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      read: true
+    })
+  })
+  .then(response => {
+    if (response.status === 204) {
+      console.log('Email marked as read');
+    } else {
+      console.error('Failed to mark email as read');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+// Mark email as unread
+function mark_email_as_unread(email_id) {
+  console.log(`Mark email n°${email_id} as read`);
+  fetch(`/emails/${email_id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      read: false
+    })
+  })
+  .then(response => {
+    if (response.status === 204) {
+      console.log('Email marked as unread');
+    } else {
+      console.error('Failed to mark email as unread');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
   });
 }
 
@@ -116,6 +159,8 @@ function get_email_content(email_id) {
 function display_email_content(email) {
   document.querySelector('#emails-view').style.display = 'none';
   const emailDiv = document.createElement('div');
+
+  // add content of email
   emailDiv.innerHTML = `
     <h3>${email.subject}</h3>
     <p><strong>From:</strong> ${email.sender}</p>
@@ -124,6 +169,39 @@ function display_email_content(email) {
     <hr>
     <p>${email.body}</p>
   `;
+
+  // add checkbox to mark mail as unread
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  //checkbox.checked = email.read;
+  checkbox.addEventListener('change', () => {
+    if (checkbox.checked) {
+      mark_email_as_unread(email.id);
+    }
+  }
+  );
+
+  // add checkbox to mark email as unread
+  const label = document.createElement('label');
+  label.htmlFor = 'mark-as-unread';
+  label.innerHTML = '<strong>Mark as unread:</strong>';
+  emailDiv.appendChild(label);
+  emailDiv.appendChild(checkbox);
+  // jump lines after checkbox
+  emailDiv.appendChild(document.createElement('br'));
+
+
+  // add reply button
+  const replyButton = document.createElement('button');
+  replyButton.innerHTML = 'Reply';
+  replyButton.addEventListener('click', () => {
+    compose_email();
+    document.querySelector('#compose-recipients').value = email.sender;
+    document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
+    document.querySelector('#compose-body').value = `On ${email.timestamp} ${email.sender} wrote: ${email.body}`;
+  }
+  );
+  emailDiv.appendChild(replyButton);
   document.querySelector('#email-content').innerHTML = '';
   document.querySelector('#email-content').appendChild(emailDiv);
 }
