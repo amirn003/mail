@@ -47,13 +47,20 @@ function load_mailbox(mailbox) {
   get_emails(mailbox)
     .then(emails => {
       // Display emails
-      display_emails(mailbox, emails);
+      if (mailbox === 'inbox' || mailbox === 'archive') {
+        display_emails(mailbox, emails, true);
+      } else {
+        display_emails(mailbox, emails);
+      }
     });
 
 }
 
 // Display emails when load_mailbox is called
-function display_emails(mailbox, emails){
+// Add an optional argument to display_emails to add a button to archive if it is the inbox mailbox
+
+function display_emails(mailbox, emails, archive=false){
+  console.log(`ARCHIVE: ${archive}`);
   const emailsDiv = document.createElement('div');
   // Add id to emailsDiv
   emailsDiv.id = 'emails';
@@ -81,7 +88,17 @@ function display_emails(mailbox, emails){
     }
 
     // Add content of email to emailDiv
-    emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span>`;
+    if (archive && mailbox === 'inbox') {
+      emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span> - <button id="archive">Archive</button>`;
+      emailDiv.querySelector('#archive').addEventListener('click', () => {
+        archive_email(email.id);
+        load_mailbox('inbox');
+      });
+    } else if (archive && mailbox === 'archive') {
+      emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span> - <button id="archive">Unarchive</button>`;
+    } else {
+      emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span>`;
+    }
     emailDiv.addEventListener('click', () => {
       mark_email_as_read(email.id);
       get_email_content(email.id).then(email_content => {
@@ -97,6 +114,28 @@ function display_emails(mailbox, emails){
     document.querySelector('#emails-view').appendChild(emailDiv);
   });
 }
+
+// Archive email
+function archive_email(email_id) {
+  console.log(`Archive email n°${email_id}`);
+  fetch(`/emails/${email_id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      archived: true
+    })
+  })
+  .then(response => {
+    if (response.status === 204) {
+      console.log('Email archived');
+    } else {
+      console.error('Failed to archive email');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
 
 // Mark email as read
 function mark_email_as_read(email_id) {
