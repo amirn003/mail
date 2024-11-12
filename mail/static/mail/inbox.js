@@ -89,6 +89,7 @@ function display_emails(mailbox, emails, archive=false){
 
     // Add content of email to emailDiv
     if (archive && mailbox === 'inbox') {
+
       emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span> - <button id="archive">Archive</button>`;
       emailDiv.querySelector('#archive').addEventListener('click', () => {
         archive_email(email.id);
@@ -264,7 +265,11 @@ function display_email_content(email) {
   replyButton.addEventListener('click', () => {
     compose_email();
     document.querySelector('#compose-recipients').value = email.sender;
-    document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
+    if (email.subject.slice(0, 4) === 'Re: ') {
+      document.querySelector('#compose-subject').value = email.subject;
+    } else {
+      document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
+    }
     document.querySelector('#compose-body').value = `On ${email.timestamp} ${email.sender} wrote: ${email.body}`;
   }
   );
