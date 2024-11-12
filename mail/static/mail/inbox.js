@@ -95,20 +95,26 @@ function display_emails(mailbox, emails, archive=false){
         load_mailbox('inbox');
       });
     } else if (archive && mailbox === 'archive') {
-      emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span> - <button id="archive">Unarchive</button>`;
+      emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span> - <button id="unarchive">Unarchive</button>`;
+      emailDiv.querySelector('#unarchive').addEventListener('click', () => {
+        unarchive_email(email.id);
+        load_mailbox('inbox');
+      })
     } else {
       emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span>`;
     }
-    emailDiv.addEventListener('click', () => {
+
+    emailDiv.addEventListener('click', (event) => {
+      if (event.target.tagName !== 'BUTTON') {
       mark_email_as_read(email.id);
       get_email_content(email.id).then(email_content => {
         if (email_content) {
-          display_email_content(email_content);
+        display_email_content(email_content);
         } else {
-          console.error('Failed to load email content');
+        console.error('Failed to load email content');
         }
       });
-
+      }
     });
 
     document.querySelector('#emails-view').appendChild(emailDiv);
@@ -129,6 +135,27 @@ function archive_email(email_id) {
       console.log('Email archived');
     } else {
       console.error('Failed to archive email');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+// Unarchive email
+function unarchive_email(email_id) {
+  console.log(`Unarchive email n°${email_id}`);
+  fetch(`/emails/${email_id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      archived: false
+    })
+  })
+  .then(response => {
+    if (response.status === 204) {
+      console.log('Email unarchived');
+    } else {
+      console.error('Failed to unarchive email');
     }
   })
   .catch(error => {
