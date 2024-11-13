@@ -78,6 +78,9 @@ function display_emails(mailbox, emails, archive=false){
     emailDiv.style.border = '1px solid black';
     // Add padding to emailDiv
     emailDiv.style.padding = '5px';
+    // Add position relative to emailDiv
+    emailDiv.style.position = 'relative';
+    emailDiv.style.height = '55px';
 
     // Add background color if email has been read
     if (email.read) {
@@ -90,13 +93,13 @@ function display_emails(mailbox, emails, archive=false){
     // Add content of email to emailDiv
     if (archive && mailbox === 'inbox') {
 
-      emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span> - <button id="archive">Archive</button>`;
+      emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span> - <button class="btn-white" id="archive">Archive</button>`;
       emailDiv.querySelector('#archive').addEventListener('click', () => {
         archive_email(email.id);
         load_mailbox('inbox');
       });
     } else if (archive && mailbox === 'archive') {
-      emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span> - <button id="unarchive">Unarchive</button>`;
+      emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span> - <button class="btn-white" id="unarchive">Unarchive</button>`;
       emailDiv.querySelector('#unarchive').addEventListener('click', () => {
         unarchive_email(email.id);
         load_mailbox('inbox');
