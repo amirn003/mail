@@ -1,7 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
 
   // Use buttons to toggle between views
-  document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
+  document.querySelector('#inbox').addEventListener('click', () => {
+    load_mailbox('inbox');
+  });
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
@@ -10,6 +12,10 @@ document.addEventListener('DOMContentLoaded', function() {
   load_mailbox('inbox');
 });
 
+window.onpopstate = function(event) {
+  load_mailbox(event.state.mailbox);
+  console.log(event.state.mailbox);
+}
 
 function compose_email() {
 
@@ -57,17 +63,12 @@ function load_mailbox(mailbox) {
 }
 
 // Display emails when load_mailbox is called
-// Add an optional argument to display_emails to add a button to archive if it is the inbox mailbox
-
 function display_emails(mailbox, emails, archive=false){
   console.log(`ARCHIVE: ${archive}`);
   const emailsDiv = document.createElement('div');
-  // Add id to emailsDiv
   emailsDiv.id = 'emails';
-  //emailsDiv.innerHTML = `${mailbox.toUpperCase()}: ` + emails;
 
   // Loop through emails and create a counter for each email
-  //emails.reverse();
   emails.forEach(function (email, i) {
     console.log(`EMAIL n°${i}: ${email.id} - ${email.sender} - ${email.subject}`);
 
@@ -80,7 +81,13 @@ function display_emails(mailbox, emails, archive=false){
     emailDiv.style.padding = '5px';
     // Add position relative to emailDiv
     emailDiv.style.position = 'relative';
+    // Add height to emailDiv
     emailDiv.style.height = '55px';
+    emailDiv.style.paddingTop = '15px';
+
+    // Add cursor pointer to emailDiv
+    emailDiv.style.cursor = 'pointer';
+
 
     // Add background color if email has been read
     if (email.read) {
@@ -93,13 +100,13 @@ function display_emails(mailbox, emails, archive=false){
     // Add content of email to emailDiv
     if (archive && mailbox === 'inbox') {
 
-      emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span> - <button class="btn-white" id="archive">Archive</button>`;
+      emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span> <button class="btn-white" id="archive">Archive</button>`;
       emailDiv.querySelector('#archive').addEventListener('click', () => {
         archive_email(email.id);
         load_mailbox('inbox');
       });
     } else if (archive && mailbox === 'archive') {
-      emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span> - <button class="btn-white" id="unarchive">Unarchive</button>`;
+      emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span> <button class="btn-white" id="unarchive">Unarchive</button>`;
       emailDiv.querySelector('#unarchive').addEventListener('click', () => {
         unarchive_email(email.id);
         load_mailbox('inbox');
@@ -244,7 +251,6 @@ function display_email_content(email) {
   // add checkbox to mark mail as unread
   const checkbox = document.createElement('input');
   checkbox.type = 'checkbox';
-  //checkbox.checked = email.read;
   checkbox.addEventListener('change', () => {
     if (checkbox.checked) {
       mark_email_as_unread(email.id);
@@ -293,7 +299,6 @@ function send_email() {
   })
   .then(response => response.json())
   .then(result => {
-    // Print result
     console.log(result);
   });
 
@@ -306,7 +311,6 @@ function get_emails(mailbox) {
   return fetch(`/emails/${mailbox}`)
     .then(response => response.json())
     .then(emails => {
-      // Print emails
       console.log(emails);
       return emails;
     })

@@ -20,4 +20,5 @@ button:hover{
   position: absolute;
   right: 0;
   margin-right: 3px;
+  margin-top: -10px;
 }
