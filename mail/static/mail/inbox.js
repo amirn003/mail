@@ -3,11 +3,20 @@ document.addEventListener('DOMContentLoaded', function() {
   // Use buttons to toggle between views
   document.querySelector('#inbox').addEventListener('click', () => {
     load_mailbox('inbox');
-    history.pushState({mailbox: 'inbox'}, 'Inbox', '/inbox');
+    history.pushState({mailbox: 'inbox'}, 'inbox', '/inbox');
   });
-  document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
-  document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
-  document.querySelector('#compose').addEventListener('click', compose_email);
+  document.querySelector('#sent').addEventListener('click', () => {
+    load_mailbox('sent');
+    history.pushState({mailbox: 'sent'}, 'sent', '/sent');
+  });
+  document.querySelector('#archived').addEventListener('click', () => {
+    load_mailbox('archive');
+    history.pushState({mailbox: 'archive'}, 'archive', '/archive');
+  });
+  document.querySelector('#compose').addEventListener('click', () => {
+    compose_email();
+    history.pushState({mailbox: 'compose'}, 'compose', '/compose')
+  });
 
   // By default, load the inbox
   load_mailbox('inbox');
@@ -15,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 window.onpopstate = function(event) {
   load_mailbox(event.state.mailbox);
+  compose_email();
   console.log(event.state.mailbox);
 }
 
