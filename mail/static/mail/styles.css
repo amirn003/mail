@@ -22,3 +22,19 @@ button:hover{
   margin-right: 3px;
   margin-top: -10px;
 }
+
+@keyframes move {
+  from {
+      left: 100%;
+  }
+  to {
+      left: 0%;
+  }
+}
+
+h3 {
+  position: relative;
+  animation-name: move;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+}
