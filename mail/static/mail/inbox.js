@@ -120,7 +120,7 @@ function display_emails(mailbox, emails, archive=false){
       emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span> <button class="btn-white" id="unarchive">Unarchive</button>`;
       emailDiv.querySelector('#unarchive').addEventListener('click', () => {
         unarchive_email(email.id);
-        load_mailbox('inbox');
+        load_mailbox('archive');
       })
     } else {
       emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span>`;
