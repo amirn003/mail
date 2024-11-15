@@ -18,36 +18,23 @@ document.addEventListener('DOMContentLoaded', function() {
     history.pushState({mailbox: 'compose'}, 'compose', '/compose')
   });
 
-  const path = window.location.pathname;
-  console.log(`PATH: ${path}`);
+  // By default, load the inbox
+  load_mailbox('inbox');
 
-  if (path === '/inbox') {
-    load_mailbox('inbox');
-  } else if (path === '/sent') {
-    load_mailbox('sent');
-  } else if (path === '/archive') {
-    load_mailbox('archive');
-  } else if (path === '/compose') {
-    compose_email();
-  } else {
-    // By default, load the inbox
-    load_mailbox('inbox');
-  }
-
-  window.onpopstate = function(event) {
-    if (event.state && event.state.mailbox) {
-      console.log(event.state.mailbox);
-      if (event.state.mailbox === 'compose') {
-        compose_email();
-      } else {
-        load_mailbox(event.state.mailbox);
-      }
-    } else {
-      load_mailbox('inbox');
-    }
-  }
 });
 
+window.onpopstate = function(event) {
+  if (event.state && event.state.mailbox) {
+    console.log(event.state.mailbox);
+    if (event.state.mailbox === 'compose') {
+      compose_email();
+    } else {
+      load_mailbox(event.state.mailbox);
+    }
+  } else {
+    load_mailbox('inbox');
+  }
+}
 
 
 function compose_email() {
@@ -142,16 +129,12 @@ function display_emails(mailbox, emails, archive=false){
       emailDiv.querySelector('#archive').addEventListener('click', () => {
         archive_email(email.id);
         load_mailbox('inbox');
-        // Reload page
-        console.log('Reloading page');
-        location.reload();
-
       });
     } else if (archive && mailbox === 'archive') {
       emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span> <button class="btn-white" id="unarchive">Unarchive</button>`;
       emailDiv.querySelector('#unarchive').addEventListener('click', () => {
         unarchive_email(email.id);
-        load_mailbox('archive');
+        load_mailbox('inbox');
       })
     } else {
       emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span>`;
