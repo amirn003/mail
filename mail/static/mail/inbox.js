@@ -48,21 +48,32 @@ function compose_email() {
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
 
-  // Clear out composition fields
-  document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
+  // Send mail
+  const form = document.querySelector('#compose-form');
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    send_email();
+    load_mailbox('sent');
+  });
 
 }
 
-// Send mail
-const form = document.querySelector('#compose-form');
+function send_email() {
+  fetch('/emails', {
+    method: 'POST',
+    body: JSON.stringify({
+      recipients: document.querySelector('#compose-recipients').value,
+      subject: document.querySelector('#compose-subject').value,
+      body: document.querySelector('#compose-body').value
+    })
+  })
+  .then(response => response.json())
+  .then(result => {
+    console.log(result);
+  });
 
-form.addEventListener('submit', (event) => {
-  event.preventDefault();
-  send_email();
-  load_mailbox('sent');
-});
+  return false;
+}
 
 function load_mailbox(mailbox) {
 
@@ -310,24 +321,6 @@ function display_email_content(email) {
   emailDiv.appendChild(replyButton);
   document.querySelector('#email-content').innerHTML = '';
   document.querySelector('#email-content').appendChild(emailDiv);
-}
-
-
-function send_email() {
-  fetch('/emails', {
-    method: 'POST',
-    body: JSON.stringify({
-      recipients: document.querySelector('#compose-recipients').value,
-      subject: document.querySelector('#compose-subject').value,
-      body: document.querySelector('#compose-body').value
-    })
-  })
-  .then(response => response.json())
-  .then(result => {
-    console.log(result);
-  });
-
-  return false;
 }
 
 
