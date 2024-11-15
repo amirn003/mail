@@ -18,14 +18,29 @@ document.addEventListener('DOMContentLoaded', function() {
     history.pushState({mailbox: 'compose'}, 'compose', '/compose')
   });
 
-  // By default, load the inbox
-  load_mailbox('inbox');
+  const path = window.location.pathname;
+
+  if (path === '/inbox') {
+    load_mailbox('inbox');
+  } else if (path === '/sent') {
+    load_mailbox('sent');
+  } else if (path === '/archive') {
+    load_mailbox('archive');
+  } else if (path === '/compose') {
+    compose_email();
+  } else {
+    // By default, load the inbox
+    load_mailbox('inbox');
+  }
 });
 
 window.onpopstate = function(event) {
-  load_mailbox(event.state.mailbox);
-  compose_email();
   console.log(event.state.mailbox);
+  if (event.state.mailbox === 'compose') {
+    compose_email();
+  } else {
+    load_mailbox(event.state.mailbox);
+  }
 }
 
 function compose_email() {
@@ -39,16 +54,21 @@ function compose_email() {
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
 
-  // Send mail
-  const form = document.querySelector('#compose-form');
-
-  form.addEventListener('submit', (event) => {
-    event.preventDefault();
-    send_email();
-    load_mailbox('sent');
-  });
+  // Clear out composition fields
+  document.querySelector('#compose-recipients').value = '';
+  document.querySelector('#compose-subject').value = '';
+  document.querySelector('#compose-body').value = '';
 
 }
+
+// Send mail
+const form = document.querySelector('#compose-form');
+
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
+  send_email();
+  load_mailbox('sent');
+});
 
 function load_mailbox(mailbox) {
 
@@ -115,6 +135,10 @@ function display_emails(mailbox, emails, archive=false){
       emailDiv.querySelector('#archive').addEventListener('click', () => {
         archive_email(email.id);
         load_mailbox('inbox');
+        // Reload page
+        console.log('Reloading page');
+        location.reload();
+
       });
     } else if (archive && mailbox === 'archive') {
       emailDiv.innerHTML = `<span>${email.sender}</span> - <span>${email.subject}</span> - <span>${email.timestamp}</span> <button class="btn-white" id="unarchive">Unarchive</button>`;
