@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   const path = window.location.pathname;
+  console.log(`PATH: ${path}`);
 
   if (path === '/inbox') {
     load_mailbox('inbox');
@@ -32,16 +33,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // By default, load the inbox
     load_mailbox('inbox');
   }
+
+  window.onpopstate = function(event) {
+    if (event.state && event.state.mailbox) {
+      console.log(event.state.mailbox);
+      if (event.state.mailbox === 'compose') {
+        compose_email();
+      } else {
+        load_mailbox(event.state.mailbox);
+      }
+    } else {
+      load_mailbox('inbox');
+    }
+  }
 });
 
-window.onpopstate = function(event) {
-  console.log(event.state.mailbox);
-  if (event.state.mailbox === 'compose') {
-    compose_email();
-  } else {
-    load_mailbox(event.state.mailbox);
-  }
-}
+
 
 function compose_email() {
 
