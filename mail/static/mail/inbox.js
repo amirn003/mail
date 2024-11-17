@@ -1,25 +1,27 @@
 document.addEventListener('DOMContentLoaded', function() {
-
+  const BASE_URL = '/emails';
   // Use buttons to toggle between views
   document.querySelector('#inbox').addEventListener('click', () => {
     load_mailbox('inbox');
-    history.pushState({mailbox: 'inbox'}, 'inbox', '/inbox');
+    // history.pushState({mailbox: 'inbox'}, 'emails/inbox', `${BASE_URL}/inbox`);
   });
   document.querySelector('#sent').addEventListener('click', () => {
     load_mailbox('sent');
-    history.pushState({mailbox: 'sent'}, 'sent', '/sent');
+    // Clean history to avoid to 'emails' in the URL each time we click on the sent button
+    history.pushState({mailbox: 'sent'}, '', `${BASE_URL}/sent`);
   });
   document.querySelector('#archived').addEventListener('click', () => {
     load_mailbox('archive');
-    history.pushState({mailbox: 'archive'}, 'archive', '/archive');
+    history.pushState({mailbox: 'archive'}, '', `${BASE_URL}/archive`);
   });
   document.querySelector('#compose').addEventListener('click', () => {
     compose_email();
-    history.pushState({mailbox: 'compose'}, 'compose', '/compose')
+    history.pushState({mailbox: 'compose'}, '', '/emails')
   });
 
   // By default, load the inbox
   load_mailbox('inbox');
+  history.replaceState({mailbox: 'inbox}'}, '', `${BASE_URL}/inbox`);
 
 });
 
@@ -38,7 +40,6 @@ window.onpopstate = function(event) {
 
 
 function compose_email() {
-
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
