@@ -51,11 +51,11 @@ function compose_email() {
 
   // Send mail
   const form = document.querySelector('#compose-form');
-  form.addEventListener('submit', (event) => {
+  form.onsubmit = (event) => {
     event.preventDefault();
     send_email();
     load_mailbox('sent');
-  });
+  };
 
 }
 
