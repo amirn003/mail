@@ -1,6 +1,6 @@
-# Mail HarvardX Project 3
+# Mail Django (HarvardX)
 
-Mail est une application web de messagerie construite avec Django. Elle permet aux utilisateurs de s'inscrire, de se connecter, d'envoyer et de recevoir des emails.
+Mail with Django is a web-based email application built with Django. It allows users to sign up, log in, send, and receive emails.
 
 
 ## Installation
